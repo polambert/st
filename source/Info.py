@@ -28,6 +28,9 @@ class Info:
             if percent < 25:
                 color = Color.LightRed
 
+            if charging and Settings("battery_greenIfCharging"):
+                color = LightGreen
+
             ## Calculate simplified time left
             hours = timeLeft // 60
             minutes = timeLeft % 60
@@ -140,14 +143,16 @@ class Info:
             for i in text:
                 if i in "0123456789":
                     cap += i
+                elif i.isspace():
+                    pass
                 elif i == "d":
                     total += int(cap) * 24 * 60 * 60
                 elif i == "h":
                     total += int(cap) * 60 * 60
                 elif i == "m":
                     total += int(cap) * 60
-                else:
-                    total += int(cap)
+
+            total += int(cap)
 
             return total
 
