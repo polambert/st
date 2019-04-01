@@ -17,7 +17,7 @@ class Info:
             if battery == None:
                 return None
 
-            percent = battery.percent
+            percent = round(battery.percent, 2)
             timeLeft = battery.secsleft / 60 # Convert to minutes left
             charging = battery.power_plugged
 
@@ -33,13 +33,13 @@ class Info:
 
             ## Calculate simplified time left
             hours = timeLeft // 60
-            minutes = timeLeft % 60
+            minutes = round(timeLeft % 60)
 
             log(color)
             log("  Battery: ")
             log(str(percent) + "% ")
             if not charging:
-                log("(" + str(hours) + "h " + str(minutes) + "m)")
+                log("(" + (str(hours) + "h ") * (hours != 0) + str(minutes) + "m)")
             else:
                 log("(Charging)")
             print(Color.Reset)
