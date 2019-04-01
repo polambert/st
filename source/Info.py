@@ -1,6 +1,7 @@
 
 import time
 import datetime
+import os
 
 import psutil
 
@@ -126,17 +127,38 @@ class Info:
 
         def ListPIDInfo(pid):
             # <pid> must be an int.
+            is_sudo = os.getuid() == 0
+
+            if not is_sudo:
+                log(Color.LightRed)
+                log("  You're not running as root! For that reason, we can't display process information :(")
+                print(Color.Reset)
+                return
+
             p = psutil.Process(pid)
-            print("  " + str(pid))
-            print("    " + p.exe() + p.name())
+            print(Color.LightGreen + "  " + str(pid) + Color.Bold + " - "+ str(p.name()) + Color.Reset)
+            if p.is_running:
+                print("    Currently Running")
+            else:
+                print("    Not Currently Running")
+            print("    " + p.exe())
             print("    " + " ".join(p.cmdline()))
             print("    Children:")
 
-            children = p.children(recursive=True)
+            started = datetime.datetime.utcfromtimestamp(int(p.create_time())).strftime("%H:%M:%S")
+
+            children = p.children()
             for child in children:
-                print("      %7i %-10s %8s" % (child.pid, child.name, child.started))
+                print((Color.LightGreen + Color.Bold + "      %7i" + Color.BoldOff + " %-8s" + Color.Bold + " %s" + Color.Reset) % (child.pid, started, child.name()))
 
-
+            # Log the Memory Usage
+            mem_percent = str(round(p.memory_percent(), 2))
+            mem_usage = str(p.memory_full_info().uss) + " bytes"
+            log(Color.Bold + Color.LightGreen + "    " + mem_percent + "%")
+            log(Color.BoldOff + " memory used. (")
+            log(Color.Bold + mem_usage + Color.BoldOff)
+            log(")")
+            print(Color.Reset)
 
     class Time:
         def PrintInfo():
