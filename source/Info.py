@@ -108,6 +108,35 @@ class Info:
 
         def GetProcessCount():
             return len(psutil.pids())
+        
+        def ListPIDs():
+            pids = psutil.pids()
+
+            for pid in pids:
+                log("%-7s" % pid)
+                try:
+                    log(" %20s" % (psutil.Process(pid).exe()))
+                except:
+                    log(" %20s" % " PD1")
+                try:
+                    log("   %s" % (psutil.Process(pid).name()))
+                except:
+                    log("   PD2")
+                print()
+
+        def ListPIDInfo(pid):
+            # <pid> must be an int.
+            p = psutil.Process(pid)
+            print("  " + str(pid))
+            print("    " + p.exe() + p.name())
+            print("    " + " ".join(p.cmdline()))
+            print("    Children:")
+
+            children = p.children(recursive=True)
+            for child in children:
+                print("      %7i %-10s %8s" % (child.pid, child.name, child.started))
+
+
 
     class Time:
         def PrintInfo():

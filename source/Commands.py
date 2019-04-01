@@ -34,6 +34,10 @@ class Commands:
 
         Commands.commands["net"] = Commands.CommandList.network
 
+        Commands.commands["pids"] = Commands.CommandList.pids
+
+        Commands.commands["pidi"] = Commands.CommandList.pidinfo
+
     class CommandList:
         def cpu(arg):
             ## Remember that <arg> is a string containing all of the rest of
@@ -156,3 +160,9 @@ class Commands:
                 print(Color.Magenta + "    Packets Sent  " + Color.LightMagenta + "%-13i" % (counters[c].packets_sent))
                 print(Color.Magenta + "    Packets Recv  " + Color.LightMagenta + "%-13i" % (counters[c].packets_recv))
                 log(Color.Reset)
+
+        def pids(arg):
+            Info.Process.ListPIDs()
+
+        def pidinfo(arg):
+            Info.Process.ListPIDInfo(int(arg))
