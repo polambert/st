@@ -32,6 +32,8 @@ class Commands:
 
         Commands.commands["cd"] = Commands.CommandList.cd
 
+        Commands.commands["net"] = Commands.CommandList.network
+
     class CommandList:
         def cpu(arg):
             ## Remember that <arg> is a string containing all of the rest of
@@ -141,3 +143,16 @@ class Commands:
                 log("  " + Info.Time.GetTime(Settings("time_live")))
                 log("\r")
                 time.sleep(1)
+
+        def network(arg):
+            counters = psutil.net_io_counters(pernic=True)
+
+            for c in counters.keys():
+                log(Color.LightMagenta)
+                log("  " + c)
+                print(Color.Reset)
+                print(Color.Magenta + "    Bytes Sent    " + Color.LightMagenta + "%-13i" % (counters[c].bytes_sent))
+                print(Color.Magenta + "    Bytes Recv    " + Color.LightMagenta + "%-13i" % (counters[c].bytes_recv))
+                print(Color.Magenta + "    Packets Sent  " + Color.LightMagenta + "%-13i" % (counters[c].packets_sent))
+                print(Color.Magenta + "    Packets Recv  " + Color.LightMagenta + "%-13i" % (counters[c].packets_recv))
+                log(Color.Reset)
